@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Runner Game - Proyecto</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #222; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+        canvas { background: #fff; border: 2px solid #000; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 800;
+    canvas.height = 400;
+
+    
+    let score = 0;
+    let highscore = localStorage.getItem("highscore") || 0;
+    let gameSpeed = 5;
+    let isGameOver = false;
+
+    
+    const player = {
+        x: 50,
+        y: 300,
+        width: 40,
+        height: 60,
+        baseHeight: 60,
+        color: '#3498db',
+        dy: 0,
+        jumpForce: 12,
+        gravity: 0.6,
+        isGrounded: false,
+        isDucking: false
+    };
+
+    
+    const obstacles = [];
+    function spawnObstacle() {
+        let type = Math.random() > 0.5 ? 'ground' : 'air';
+        obstacles.push({
+            x: canvas.width,
+            y: type === 'ground' ? 310 : 250,
+            width: 30,
+            height: 50,
+            color: '#e74c3c'
+        });
+    }
+
+    
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && player.isGrounded) {
+            player.dy = -player.jumpForce;
+            player.isGrounded = false;
+        }
+        if (e.code === 'ArrowDown') {
+            player.isDucking = true;
+            player.height = player.baseHeight / 2; // Agacharse
+        }
+        if (isGameOver && e.code === 'Enter') restartGame();
+    });
+
+    window.addEventListener('keyup', (e) => {
+        if (e.code === 'ArrowDown') {
+            player.isDucking = false;
+            player.height = player.baseHeight;
+        }
+    });
+
+    function restartGame() {
+        score = 0;
+        obstacles.length = 0;
+        isGameOver = false;
+        gameSpeed = 5;
+        animate();
+    }
+
+    
+    function animate() {
+        if (isGameOver) {
+            ctx.fillStyle = "rgba(0,0,0,0.5)";
+            ctx.fillRect(0,0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.fillText("GAME OVER - Press Enter", canvas.width/2 - 50, canvas.height/2);
+            return;
+        }
+
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        
+        score++;
+        if (score % 500 === 0) gameSpeed += 0.5; // Cambios en el escenario (velocidad)
+
+        
+        player.dy += player.gravity;
+        player.y += player.dy;
+
+       
+        if (player.y + player.height > 360) {
+            player.y = 360 - player.height;
+            player.dy = 0;
+            player.isGrounded = true;
+        }
+
+        
+        ctx.fillStyle = player.color;
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+
+        
+        if (score % 100 === 0) spawnObstacle();
+
+        obstacles.forEach((obs, index) => {
+            obs.x -= gameSpeed;
+            ctx.fillStyle = obs.color;
+            ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+
+           
+            if (player.x < obs.x + obs.width &&
+                player.x + player.width > obs.x &&
+                player.y < obs.y + obs.height &&
+                player.y + player.height > obs.y) {
+                
+                isGameOver = true;
+                if (score > highscore) {
+                    highscore = score;
+                    localStorage.setItem("highscore", highscore);
+                }
+            }
+
+            if (obs.x + obs.width < 0) obstacles.splice(index, 1);
+        });
+
+        
+        ctx.fillStyle = "black";
+        ctx.font = "20px Arial";
+        ctx.fillText(`Score: ${score}`, 20, 30);
+        ctx.fillText(`HI: ${highscore}`, 20, 60);
+    }
+
+    animate();
+</script>
+</body>
+</html>
