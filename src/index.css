@@ -1,0 +1,99 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: sans-serif;
+  background: #f5f5f5;
+}
+
+#root {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* --- Panel lateral --- */
+.panel {
+  width: 300px;
+  min-width: 300px;
+  background: #fff;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.panel h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.panel h2 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.panel select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  color: #1a1a1a;
+  cursor: pointer;
+}
+
+.btn-algo {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-algo:hover { opacity: 0.85; }
+.btn-dijkstra { background: #3b82f6; color: #fff; }
+.btn-kruskal  { background: #10b981; color: #fff; }
+.btn-prim     { background: #8b5cf6; color: #fff; }
+.btn-reset    { background: #f1f5f9; color: #555; }
+
+.stat-card {
+  background: #f8fafc;
+  border: 1px solid #e8ecf0;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.stat-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+.stat-value { font-size: 20px; font-weight: 600; color: #1a1a1a; }
+
+.algo-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 99px;
+  margin-bottom: 8px;
+}
+.badge-dijkstra { background: #dbeafe; color: #1d4ed8; }
+.badge-kruskal  { background: #d1fae5; color: #065f46; }
+.badge-prim     { background: #ede9fe; color: #5b21b6; }
+
+/* --- Mapa --- */
+.map-container {
+  flex: 1;
+  position: relative;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
